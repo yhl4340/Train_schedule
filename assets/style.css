@@ -1,6 +1,10 @@
 .card {
-    margin:10px 20px;
+    margin:20px 20px;
 }
 .jumbotron {
     margin: auto 20px;
+    background-image: url('giphy.gif');
+   object-fit: fill;
+    
+   
 }

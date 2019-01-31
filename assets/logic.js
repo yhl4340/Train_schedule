@@ -9,7 +9,7 @@
 // Users from many different machines must be able to view same train times.
 
 // -------------------------------------------------------------------------------
-
+$(document).ready(function(){
 var config = {
   apiKey: "AIzaSyCK2C9oFsjYHdg02K0trwXoxWBw-CBsB1E",
   authDomain: "train-schedule-56a2a.firebaseapp.com",
@@ -21,15 +21,6 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
-//   first train is at 6am. train leaves every 5 mins.
-// current time is 6:08am
-// next train is?
-// 08-00=8(current time - when train leaves)
-// 8%5 = 3 ()
-// 5 - 3 = 2 min away (train leaving every 5 min - the current waiting time 3)
-// 2 min + 6:08 current time = 6:10 ( when the next train will arrive)
-
-// ---------------------TIME STUFF
 
 //-------------MAIN PROCESSES-------------
 //  on click event to sumit
@@ -70,10 +61,11 @@ $("#submit").on("click", function() {
   $("#frequency").val("");
 });
 
-// creating a fb event. need to tie the data in the fb to our side using the snapshot. this will update any changes
+// creating a fb event. need to tie the data in the fb using the snapshot. this will update any changes
 
 database.ref().on("child_added", function(snapshot) {
   console.log(snapshot.val());
+
 
   // storing the values
   var trainName = snapshot.val().name;
@@ -87,16 +79,17 @@ database.ref().on("child_added", function(snapshot) {
   console.log(firstTrainTime + '!!');
 
 
-  // ---------------------TIME STUFF
+  // ---------------------TIME STUFF----------------
 
   var firstConverted = moment(firstTrainTime, "HH:mm").subtract(1, "years");
   console.log("firstConverted");
   console.log(firstConverted);
 
-  
+  // current time
   var currentTime = moment();
   console.log("hello! current time: " + moment(currentTime).format("HH:MM"));
   
+  // time difference
   var timeDiff = moment().diff(moment(firstConverted), "minutes");
   console.log('difference in time: ' + timeDiff);
   console.log(firstTrainTime + 'hallo!!');
@@ -114,7 +107,7 @@ database.ref().on("child_added", function(snapshot) {
   var nextArrivaL = moment().add(trainAway, "minutes");
   console.log("arriving: " + moment(trainAway).format("HH:mm"));
 
-  // -------------------------------------------------------
+  // --------------------END OF TIME STUFF-----------------------------------
 
   var newRow = $("<tr>").append(
     $("<td>").html(trainName),
@@ -129,7 +122,9 @@ database.ref().on("child_added", function(snapshot) {
 
 //timer to automatically update the schedule
 
-function updateInfo(data, snapshot) {
-  interval = setInterval(snapshot, 10000);
+function updateInfo(data,snapshot) {
+  setInterval(snapshot, 10000);
   alert("yay");
-}
+};
+updateInfo();
+});
