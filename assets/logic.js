@@ -8,6 +8,7 @@
 // Code this app to calculate when the next train will arrive; this should be relative to the current time.
 // Users from many different machines must be able to view same train times.
 
+// -------------------------------------------------------------------------------
 
 var config = {
     apiKey: "AIzaSyCK2C9oFsjYHdg02K0trwXoxWBw-CBsB1E",
@@ -25,25 +26,42 @@ var config = {
 // next train is?
 // 08-00=8(current time - when train leaves)
 // 8%5 = 3 ()
-// 5 - 3 = 2 min away (train leaving every 5 min - the current                   waiting time 3)
+// 5 - 3 = 2 min away (train leaving every 5 min - the current waiting time 3)
 // 2 min + 6:08 current time = 6:10 ( when the next train will arrive)
    
 
-// GLOBALS
+
+
+// ---------------------TIME STUFF
+
 var frequency = 5;
 var firstTrainTime = '06:00';
-var currentTime = moment();
-console.log('hello! current time: '+ moment(currentTime).format('HH:MM'));
-
-var remainder =  (currentTime - trainLeaves) % frequency;
-var trainAway = frequency - remainder;
-var nextArrivAL = trainAway + currentTime;
 var trainLeaves = firstTrainTime + frequency;
+
+// DIFF BETWEEN THE TIMES
 var firstConverted = moment(firstTrainTime, 'HH:mm' ).subtract(1,'years');
-// console.log(firstConverted);
+console.log(firstConverted);
+var timeDiff = moment().diff(moment(firstConverted), 'minutes');
+
+var currentTime = moment();
+console.log('hello! current time: '+ moment(currentTime).format('HH:MM')); 
+
+// TIME APART
+var remainder =  timeDiff % frequency;
+// (currentTime - trainLeaves) % frequency;
+console.log(remainder)
+
+// min til train
+var trainAway = frequency - remainder;
+console.log('min til train: ' + trainAway);
+
+// NEXT TRAIN ARRIVING
+var nextArrivaL = moment().add(trainAway + currentTime,'minutes');
+console.log('arriving: ' + moment(trainAway).format('HH:mm'));
 
 
-// on click event to sumit
+//-------------MAIN PROCESSES-------------
+//  on click event to sumit
 $('#submit').on('click', function(){ 
 
     event.preventDefault();
@@ -75,7 +93,6 @@ $('#submit').on('click', function(){
 
 // creating a fb event. need to tie the data in the fb to our side using the snapshot. this will update any changes 
 
-// DON'T THINK THIS IS WORKING
 database.ref().on('child_added', function(snapshot){
     console.log(snapshot.val());
     
@@ -90,8 +107,12 @@ database.ref().on('child_added', function(snapshot){
 
     var newRow = $('<tr>').append(
     $('<td>').html(trainName),
+    $('<td>').text(destination),
     $('<td>').text(frequency),
-    $('<td>').text(destination)
+    $('<td>').text(nextArrivaL),
+    $('<tb>').text(trainAway)
+
+
     );
 
     $('#schedule-table > tbody').append(newRow);
