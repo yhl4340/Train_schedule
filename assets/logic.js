@@ -46,7 +46,10 @@ $("#submit").on("click", function() {
     destination: destination,
     frequency: frequency,
     firstTrainTime: firstTrainTime
+
+    
   };
+
   // store values from the temp holder to the database
   database.ref().push(newTrain);
   console.log(newTrain);
@@ -59,8 +62,24 @@ $("#submit").on("click", function() {
   $("#destination").val(" ");
   $("#first-train-time").val("");
   $("#frequency").val("");
+
+
+ // CREATING BUTTONS FOR WHEN/IF USER WANTS TO REMOVE ENTRY. NOT WORKING
+ var trainDelBtn = $('<button>');
+ console.log('newbutton')
+ trainDelBtn.addClass('checkbox');
+ trainDelBtn.attr('data-entry', newRow);
+ trainDelBtn.text('X');
+ trainDelBtn = trainDelBtn.prepend(newRow);
+
 });
 
+
+$('#schedule-table > tbody').on('click', '.checkbox',function(){
+  var removeTrainDelBtn = $(this).attr('data-entry');
+  $(newRow + removeTrainDelBtn).remove();
+
+})
 // creating a fb event. need to tie the data in the fb using the snapshot. this will update any changes
 
 database.ref().on("child_added", function(snapshot) {
@@ -118,7 +137,10 @@ database.ref().on("child_added", function(snapshot) {
   );
 
   $("#schedule-table > tbody").append(newRow);
+
+  
 });
+
 
 //timer to automatically update the schedule
 
@@ -128,3 +150,5 @@ function updateInfo(data,snapshot) {
 };
 updateInfo();
 });
+
+

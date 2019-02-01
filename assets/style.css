@@ -4,7 +4,10 @@
 .jumbotron {
     margin: auto 20px;
     background-image: url('giphy.gif');
-   object-fit: fill;
-    
-   
+    background-size: 100% 100%;
+}
+h1{
+    color:red;
+    font-weight: bold;
+    margin-top:-30px;
 }
