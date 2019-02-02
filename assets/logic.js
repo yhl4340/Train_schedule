@@ -46,8 +46,6 @@ $("#submit").on("click", function() {
     destination: destination,
     frequency: frequency,
     firstTrainTime: firstTrainTime
-
-    
   };
 
   // store values from the temp holder to the database
@@ -65,90 +63,94 @@ $("#submit").on("click", function() {
 
 
  // CREATING BUTTONS FOR WHEN/IF USER WANTS TO REMOVE ENTRY. NOT WORKING
- var trainDelBtn = $('<button>');
- console.log('newbutton')
- trainDelBtn.addClass('checkbox');
- trainDelBtn.attr('data-entry', newRow);
- trainDelBtn.text('X');
- trainDelBtn = trainDelBtn.prepend(newRow);
-
+  // var delTrainBtn = $('<button>');
+  //   console.log('newbutton')
+  //   deltrainBtn.addClass('checkbox');
+  //   delTrainBtn.attr('data-newRow', newRow);
+  //   delTrainBtn.text('X');
+  //   delTrainBtn = delTrainBtn.prepend(newRow);
+  //   console.log('hi!!!')
 });
 
+  // $('<tbody>').on('click', '.checkbox',function(){
+  // var removeTrainBtn = $(this).attr('data-newRow');
+  // $(newRow + removeTrainBtn).remove();
 
-$('#schedule-table > tbody').on('click', '.checkbox',function(){
-  var removeTrainDelBtn = $(this).attr('data-entry');
-  $(newRow + removeTrainDelBtn).remove();
+  // })
 
-})
 // creating a fb event. need to tie the data in the fb using the snapshot. this will update any changes
 
-database.ref().on("child_added", function(snapshot) {
-  console.log(snapshot.val());
 
+    database.ref().on("child_added", function(snapshot) {
+    console.log(snapshot.val());
+    
+  // function updateInfo(snapshot) { 
+//     intervalId = setInterval(snapshot,10000);
+//     alert('yay');
+      function updateInfo(data,snapshot){
+        intervalId= setInterval(snapshot,10000);
 
-  // storing the values
-  var trainName = snapshot.val().name;
-  var destination = snapshot.val().destination;
-  var frequency = snapshot.val().frequency;
-  var firstTrainTime = snapshot.val().firstTrainTime;
-
-  console.log(trainName);
-  console.log(destination);
-  console.log(frequency);
-  console.log(firstTrainTime + '!!');
-
+    // storing the values
+        var trainName = snapshot.val().name;
+        var destination = snapshot.val().destination;
+        var frequency = snapshot.val().frequency;
+        var firstTrainTime = snapshot.val().firstTrainTime;
 
   // ---------------------TIME STUFF----------------
+        var firstConverted = moment(firstTrainTime, "HH:mm").subtract(1, "years");
+        console.log("firstConverted");
+        console.log(firstConverted);
 
-  var firstConverted = moment(firstTrainTime, "HH:mm").subtract(1, "years");
-  console.log("firstConverted");
-  console.log(firstConverted);
-
-  // current time
-  var currentTime = moment();
-  console.log("hello! current time: " + moment(currentTime).format("HH:MM"));
-  
+        // current time
+        var currentTime = moment();
+        console.log("hello! current time: " + moment(currentTime).format("HH:MM"));
+      
   // time difference
-  var timeDiff = moment().diff(moment(firstConverted), "minutes");
-  console.log('difference in time: ' + timeDiff);
-  console.log(firstTrainTime + 'hallo!!');
+        var timeDiff = moment().diff(moment(firstConverted), "minutes");
+        console.log('difference in time: ' + timeDiff);
+        console.log(firstTrainTime + 'hallo!!');
 
-
-  // TIME APART
-  var remainder = Math.abs(timeDiff % frequency);
-  console.log(remainder);
+        // time apart
+        var remainder = Math.abs(timeDiff % frequency);
+        console.log(remainder);
 
   // min til train
-  var trainAway = frequency - remainder;
-  console.log("min til train: " + trainAway);
-
-  // NEXT TRAIN ARRIVING
-  var nextArrivaL = moment().add(trainAway, "minutes");
-  console.log("arriving: " + moment(trainAway).format("HH:mm"));
+        var trainAway = frequency - remainder;
+        console.log("min til train: " + trainAway);
+          
+        // NEXT TRAIN ARRIVING
+        var nextArrivaL = moment().add(trainAway, "minutes");
+        console.log("arriving: " + moment(trainAway).format("HH:mm"));
 
   // --------------------END OF TIME STUFF-----------------------------------
 
-  var newRow = $("<tr>").append(
-    $("<td>").html(trainName),
-    $("<td>").text(destination),
-    $("<td>").text(frequency),
-    $("<td>").text(nextArrivaL),
-    $("<tb>").text(trainAway)
-  );
+        var newRow = $("<tr>").append(
+          $("<td>").html(trainName),
+          $("<td>").text(destination),
+          $("<td>").text(frequency),
+          $("<td>").text(nextArrivaL),
+          $("<tb>").text(trainAway)
+        );
+        $("#schedule-table > tbody").append(newRow);
+      };
+  });
 
-  $("#schedule-table > tbody").append(newRow);
+  // CREATING BUTTONS FOR WHEN/IF USER WANTS TO REMOVE ENTRY. NOT WORKING
+      var delTrainBtn = $('<button>');
+        console.log('newbutton')
+        deltrainBtn.addClass('checkbox');
+        delTrainBtn.attr('data-newRow', newRow);
+        delTrainBtn.text('X');
+        delTrainBtn = delTrainBtn.prepend(newRow);
+        console.log('hi!!!')
 
+      $('<tbody>').on('click', '.checkbox',function(){
+        var removeTrainBtn = $(this).attr('data-newRow');
+        $(newRow + removeTrainBtn).remove();
+      });
   
+ 
 });
 
-
-//timer to automatically update the schedule
-
-function updateInfo(data,snapshot) {
-  setInterval(snapshot, 10000);
-  alert("yay");
-};
-updateInfo();
-});
 
 
