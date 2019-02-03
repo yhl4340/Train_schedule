@@ -84,8 +84,8 @@ $(document).ready(function() {
       .data("firstTrainTime", firstTrainTime)
       .append(
         $("<td class='name'>").html(trainName),
-        $("<td class='frequency'>").text(frequency),
         $("<td class='destination'>").text(destination),
+        $("<td class='frequency'>").text(frequency),
         $("<td class='next'>").text(time.nextArrival),
         $("<tb class='trainAway'>").text(time.trainAway)
       );
